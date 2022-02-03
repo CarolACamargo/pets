@@ -15,6 +15,9 @@ import { FramePageComponent } from './pages/account/master/frame.page';
 import { ProductsCardComponent } from './components/store/products-card/products-card.component';
 import { LoadingComponent } from './components/shared/loading/loading.component';
 import { MaskDirective } from './directives/mask.directive';
+import { DataService } from './services/data.service';
+import { AuthService } from './services/auth.service';
+import { CheckoutPageComponent } from './pages/account/checkout-page/checkout-page.component';
 
 
 @NgModule({
@@ -30,7 +33,8 @@ import { MaskDirective } from './directives/mask.directive';
     CartPageComponent,
     FramePageComponent,
     ProductsCardComponent,
-    LoadingComponent
+    LoadingComponent,
+    CheckoutPageComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +42,7 @@ import { MaskDirective } from './directives/mask.directive';
     HttpClientModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [DataService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

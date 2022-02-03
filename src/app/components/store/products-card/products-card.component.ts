@@ -6,7 +6,7 @@ import { Product } from 'src/app/models/product.model';
   templateUrl: './products-card.component.html'
 })
 export class ProductsCardComponent implements OnInit {
-@Input() product: Product | undefined;
+  @Input() product: Product | undefined;
 
   constructor() { }
 

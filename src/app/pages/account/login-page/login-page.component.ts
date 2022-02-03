@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { User } from 'src/app/models/user.model';
 import { DataService } from 'src/app/services/data.service';
+import { Security } from 'src/app/utils/security.util';
+import { CustomValidator } from 'src/app/validators/custom.validator';
 
 @Component({
   selector: 'app-login-page',
@@ -12,13 +16,15 @@ export class LoginPageComponent implements OnInit {
 
   constructor(
     private service: DataService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) { 
     this.form = this.fb.group({
       username: ['', Validators.compose([
         Validators.maxLength(14),
         Validators.maxLength(14),
-        Validators.required
+        Validators.required,
+        CustomValidator.isCpf()
       ])],
       password: ['', Validators.compose([
         Validators.minLength(6),
@@ -29,7 +35,7 @@ export class LoginPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const token = localStorage.getItem('petshop.token');
+    const token = Security.getToken();
     if (token){
       this.busy=true;
       this
@@ -37,8 +43,8 @@ export class LoginPageComponent implements OnInit {
         .refreshToken()
         .subscribe(
           (data: any)=> {
-              localStorage.setItem('petshop.token', data.token);
               this.busy = false;
+              this.setUser(data.customer, data.token);
       },
       (err) => {
         localStorage.clear();
@@ -49,21 +55,29 @@ export class LoginPageComponent implements OnInit {
   }
 
   submit(){
+
     this.busy = true;
-    this
-    .service
-    .authenticate(this.form.value)
-    .subscribe(
-      (data: any)=>{
-      console.log(data);
-      localStorage.setItem('petshop.token', data.token);
-      this.busy = false;
-    },
-    (err) => {
-      console.log(err);
-      this.busy = false;
-    }
-    );
+    const user = new User("123", "Carol", "45791666802", "carolinecamargo098@gmail.com");
+    this.setUser(user, "12345")
+    // this
+    // .service
+    // .authenticate(this.form.value)
+    // .subscribe(
+    //   (data: any)=>{
+    //   this.busy = false;
+    //   this.setUser(data.customer, data.token);
+    // },
+    // (err) => {
+    //   console.log(err);
+    //   this.busy = false;
+    // }
+    // );
+
   }
+  setUser( user: User, token: string ){
+    Security.set(user, token);
+    this.router.navigate(['/']);
+  }
+
 }
   
